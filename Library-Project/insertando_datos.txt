@@ -1,5 +1,10 @@
 -- database: c:\library-project\Library-project\library_joshua_joseth\Library-Project\Library.sqlite3
 -- Use the ▷ button in the top right corner to run the entire file.
+SELECT
+    *
+FROM
+    "REVIEW";
+
 -- ------------------------------------------------------------------------
 CREATE TABLE
     BOOK (
@@ -48,7 +53,7 @@ VALUES
         8000,
         3,
         "La mayor conspiración de los últimos 2000 años está a punto de ser desvelada. Robert Langdon recibe una llamada en mitad de la noche: el conservador del museo del Louvre ha sido asesinado en extrañas circunstancias y junto a su cadáver ha aparecido un desconcertante mensaje cifrado."
-    ), 
+    ),
     (
         "Diez negritos",
         "1939",
@@ -56,7 +61,7 @@ VALUES
         4,
         "Diez personas sin relación alguna entre sí son reunidas en un misterioso islote de la costa inglesa por un tal Sr. Owen, propietario de una lujosa mansión a la par que perfecto desconocido para todos sus invitados. Tras la primera cena, y sin haber conocido aún a su anfitrión, los diez comensales son acusados mediante una grabación de haber cometido un crimen en el pasado.
 Uno por uno, a partir de ese momento, son asesinados sin explicación ni motivo aparente. Sólo una vieja canción infantil parece encerrar el misterio de una creciente pesadilla."
-    ), 
+    ),
     (
         "Alicia en el país de las maravillas",
         "1865",
@@ -114,7 +119,10 @@ Uno por uno, a partir de ese momento, son asesinados sin explicación ni motivo 
         "Con la campaña napoleónica -Austerlitz, Borodinó o el incendio de Moscú- como trasfondo, se narra la historia de dos familias de la nobleza rusa, los Bolkonski y los Rostov, protagonistas de un mundo que empieza a escenificar su propia desaparición."
     );
 
-select * from BOOK;
+select
+    *
+from
+    BOOK;
 
 DROP TABLE BOOK;
 
@@ -162,8 +170,8 @@ VALUES
     (7, 7),
     (8, 8),
     (9, 9),
-    (10, 10), 
-    (11, 11), 
+    (10, 10),
+    (11, 11),
     (12, 12);
 
 SELECT
@@ -196,7 +204,10 @@ VALUES
     ('Stieg Larsson'),
     ('León Tolstói');
 
-SELECT * FROM AUTHOR;
+SELECT
+    *
+FROM
+    AUTHOR;
 
 DROP TABLE AUTHOR;
 
@@ -209,13 +220,17 @@ CREATE TABLE
         Rent_Amount INTEGER NOT NULL,
         Rented_Day VARCHAR(250),
         Return_Date VARCHAR(250),
-
-        FOREIGN KEY (Rent_Amount) REFERENCES BOOK (Rent_Amount)
-        FOREIGN KEY (ISBN) REFERENCES BOOK (ISBN)
+        FOREIGN KEY (Rent_Amount) REFERENCES BOOK (Rent_Amount) FOREIGN KEY (ISBN) REFERENCES BOOK (ISBN)
     );
 
 INSERT INTO
-    Rented_Book (ISBN, Book_rented, Rent_Amount, Rented_Day, Return_Date)
+    Rented_Book (
+        ISBN,
+        Book_rented,
+        Rent_Amount,
+        Rented_Day,
+        Return_Date
+    )
 VALUES
     (1, 'Odisea', 3400, '12/04/2023', '12/06/2023'),
     (
@@ -226,7 +241,10 @@ VALUES
         '24/09/2023'
     );
 
-SELECT * FROM Rented_Book;
+SELECT
+    *
+FROM
+    Rented_Book;
 
 DROP TABLE Rented_Book;
 
@@ -272,7 +290,7 @@ VALUES
     ),
     (
         'Belén',
-        9999-9999,
+        9999 -9999,
         'bmondragonc@fwdcostarica.com',
         1,
         'fwdcostarica',
@@ -280,15 +298,15 @@ VALUES
     ),
     (
         'Jordan',
-        1010-1010,
+        1010 -1010,
         'ejemplousuario1@fwdcostarica',
         1,
         'fwdcostarica',
         1
     ),
-        (
+    (
         'Marco',
-        1111-1111,
+        1111 -1111,
         'ejemplousuario2@fwdcostarica',
         1,
         'fwdcostarica',
@@ -296,7 +314,7 @@ VALUES
     ),
     (
         'Bryan',
-        2222-2222,
+        2222 -2222,
         'ejemplousuario3@fwdcostarica',
         1,
         'fwdcostarica',
@@ -304,7 +322,7 @@ VALUES
     ),
     (
         'Deylan',
-        3333-3333,
+        3333 -3333,
         'ejemplousuario4@fwdcostarica',
         1,
         'fwdcostarica',
@@ -312,7 +330,7 @@ VALUES
     ),
     (
         'Wilby',
-        4444-4444,
+        4444 -4444,
         'ejemplousuario5@fwdcostarica',
         1,
         'fwdcostarica',
@@ -320,7 +338,7 @@ VALUES
     ),
     (
         'Charles',
-        5555-5555,
+        5555 -5555,
         'ejemplousuario6@fwdcostarica',
         1,
         'fwdcostarica',
@@ -328,15 +346,15 @@ VALUES
     ),
     (
         'Raúl',
-        6666-6666,
+        6666 -6666,
         'ejemplousuario7@fwdcostarica',
         1,
         'fwdcostarica',
         1
     ),
-        (
+    (
         'Gustavo',
-        6666-5555,
+        6666 -5555,
         'ejemplousuario8@fwdcostarica',
         1,
         'fwdcostarica',
@@ -344,7 +362,7 @@ VALUES
     ),
     (
         'Roger',
-        4444-3333,
+        4444 -3333,
         'ejemplousuario9@fwdcostarica',
         1,
         'fwdcostarica',
@@ -374,7 +392,10 @@ VALUES
 
 DROP TABLE TYPE;
 
-SELECT * FROM TYPE;
+SELECT
+    *
+FROM
+    TYPE;
 
 -- ------------------------------------------------------------------------
 CREATE TABLE
@@ -462,8 +483,8 @@ VALUES
     (7, 7),
     (8, 8),
     (9, 9),
-    (10, 10), 
-    (11, 11), 
+    (10, 10),
+    (11, 11),
     (12, 12);
 
 SELECT
