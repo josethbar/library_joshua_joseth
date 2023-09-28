@@ -692,3 +692,4 @@ WHERE
     Name LIKE '%s';
 
 ----------(Libros alquilados el último mes)-------------
+-- para jooooshhhhhhhhhhhhhhhhhhhhhhhhhhh
