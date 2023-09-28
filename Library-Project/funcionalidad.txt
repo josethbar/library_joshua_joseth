@@ -325,6 +325,7 @@ FROM
 DROP TABLE Orders;
 
 -- ------------------------------------------------------------------------
+-- ------------------------------------------------------------------------
 CREATE TABLE
     USER (
         Client_ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -646,10 +647,97 @@ FROM
 
 DROP TABLE GENRE;
 
+CREATE TABLE
+    Inventary_Users (
+        Inventary_UsersID INTEGER PRIMARY KEY NOT NULL,
+        Inventary_ID INTEGER NOT NULL,
+        Client_ID INTEGER NOT NULL,
+        FOREIGN KEY (Inventary_ID) REFERENCES INVENTARY (Inventary_ID),
+        FOREIGN KEY (Client_ID) REFERENCES USER (Client_ID)
+    );
+
+INSERT INTO
+    Inventary_Users (Inventary_ID, Client_ID)
+VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+    (11, 11),
+    (12, 12);
+
+DROP TABLE Inventary_Users;
+
+SELECT
+    *
+FROM
+    Inventary_Users;
+
 -- ------------------------------------------------------------------------
 -- ----------------------------------------
 --                   FUNCIONALIDAD
 -- ----------------------------------------
+-- ----------------FUNCIONALIADAD CLIENTES-----
+UPDATE Orders
+SET
+    Rented_Day = "not return"
+WHERE
+    OrdersID = 1;
+
+CREATE TRIGGER actu_inventary AFTER
+UPDATE ON Orders BEGIN
+UPDATE INVENTARY
+SET
+    Quantity_Available = Quantity_Available -1
+WHERE
+    Inventary_ID IN (
+        SELECT
+            i.Inventary_ID
+        FROM
+            Orders o
+            JOIN Book_Orders bs ON bs.Book_OrdersID = o.OrdersID
+            JOIN BOOK b ON b.ISBN = bs.ISBN
+            JOIN INVENTARY i ON i.Inventary_ID = b.Inventary_ID
+        WHERE
+            o.OrdersID = New.OrdersID
+    );
+
+END;
+
+SELECT
+    i.Inventary_ID
+FROM
+    Orders o
+    JOIN Book_Orders bs ON bs.Book_OrdersID = o.OrdersID
+    JOIN BOOK b ON b.ISBN = bs.ISBN
+    JOIN INVENTARY i ON i.Inventary_ID = b.Inventary_ID
+WHERE
+    o.OrdersID = 1;
+
+-- SELECT b.ISBN FROM Orders o
+--     JOIN Book_Orders bs ON bs.Book_OrdersID = o.Book_rentedID
+--     JOIN BOOK b ON b.ISBN = sb.ISBN
+--     WHERE o.OrdersID = 1;
+SELECT
+    *
+FROM
+    Orders;
+
+DROP TRIGGER actu_inventary;
+
+UPDATE INVENTARY
+SET
+    Borrowed_Books = 2
+WHERE
+    OrdersID = 1;
+
+------------------TRIGGER--------------------
 CREATE TRIGGER taked_books AFTER INSERT ON Book_Orders FOR EACH ROW BEGIN
 UPDATE INVENTARY
 SET
