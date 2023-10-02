@@ -713,8 +713,32 @@ FROM
 -- ----------------------------------------
 --                   FUNCIONALIDAD
 -- ----------------------------------------
--- ----------------FUNCIONALIADAD CLIENTES---------------------------------
+-- ----------------FUNCIONALIADAD CLIENTES--------------------------------
 -- ---------------------INGRESAR LIBRO------------
+
+
+-------------------(View)--------------------
+CREATE VIEW
+    Reportes AS
+SELECT
+    INVENTARY.Borrowed_Books,
+    BOOK.Name,
+    Book_Orders.Book_OrdersID,
+    Orders.Rented_Day
+FROM
+    INVENTARY
+    JOIN Orders ON INVENTARY.Inventary_ID = Orders.OrdersID
+    JOIN Book_Orders ON INVENTARY.Inventary_ID = Book_Orders.Book_OrdersID
+    JOIN BOOK ON INVENTARY.Inventary_ID = BOOK.ISBN
+WHERE
+    Orders.Rented_Day > '2023-08-18'
+    AND Orders.Rented_Day < '2023-10-02';
+
+DROP VIEW Reportes;
+
+
+
+--     ---------------------------------------------------------
 -- Actualizar el inventario: agregando nuevos libros, actualizando cantidad de ejemplares de un libro se
 -- tienen disponibles
 UPDATE INVENTARY
@@ -735,10 +759,44 @@ WHERE
 INSERT OR REPLACE INTO
     Orders (Client_ID, Book_rented, Rented_Day, Return_Date)
 VALUES
-    (11, "Guerra y paz", "19/09/2023", "23/10/2023");
+    (12, "EL niño en pijama de rayas", "2023-09-19", "2023-10-23");
+
+------ -----------------------------------------------------
+-- Actualizar el estado de las órdenes o registro de libros alquilados
+UPDATE Orders
+SET
+    Order_StateID = 4
+WHERE
+    OrdersID = 3
+    AND (
+        SELECT
+            TYPE.description
+        FROM
+            USER
+            JOIN TYPE ON USER.Type_ID == TYPE.Type_ID
+        WHERE
+            USER.client_ID = 2
+    ) = 'admin';
 
 ------------------(Feedback/Review)------------------
--- SELECT REVIEW.ReviewID FROM REVIEW
+DELETE FROM REVIEW
+WHERE
+    EXISTS (
+        SELECT
+            1
+        FROM
+            USER
+            JOIN REVIEW ON Review.ReviewID = USER.Type_ID
+            JOIN TYPE ON USER.Type_ID = USER.Type_ID
+        WHERE
+            USER.Client_ID = 10
+            AND TYPE.Type_ID = 'admin'
+            AND Text >= 'No me gustó'
+    );
+
+-- DELETE FROM Review   WHERE EXISTS(SELECT 1 FROM Users  
+-- JOIN Review  ON Review.id_review  = Users.id_type  
+-- JOIN User_Type  ON User_Type.id_type  = Users.id_type  WHERE Users.id_user = 3 AND User_Type.id_type  = 'admin') AND text_comment >= 'Muy malo';
 ----------(Libros mayores a 3 de calificación)-------------
 SELECT
     *
@@ -759,7 +817,7 @@ FROM
 ------------------
 UPDATE Orders
 SET
-    Return_Date = 13 / 09 / 2023
+    Return_Date = '2023-09-13'
 WHERE
     OrdersID = 5;
 
@@ -791,25 +849,13 @@ END;
 
 UPDATE INVENTARY
 SET
-    Borrowed_Books = 18
+    Borrowed_Books = Borrowed_Books-1
 WHERE
     Inventary_ID = 1;
 
 DROP TRIGGER actu_inventary;
 
 -- ------------------
-SELECT
-    i.Inventary_ID
-FROM
-    Orders o
-    JOIN USER u ON u.Client_ID = o.OrdersID
-    JOIN Book_Orders bs ON bs.Book_OrdersID = o.OrdersID
-    JOIN BOOK b ON b.ISBN = bs.ISBN
-    JOIN INVENTARY i ON i.Inventary_ID = b.Inventary_ID
-WHERE
-    o.OrdersID = 1;
-
------------------maybe-----------------
 SELECT
     i.Inventary_ID
 FROM
@@ -831,23 +877,6 @@ FROM
     JOIN INVENTARY i ON i.Inventary_ID = b.Inventary_ID
 WHERE
     o.OrdersID = New.OrdersID;
-
------- -----------------------------------------------------
--- Actualizar el estado de las órdenes o registro de libros alquilados
-UPDATE Orders
-SET
-    Order_StateID = 1
-WHERE
-    OrdersID = 2
-    AND (
-        SELECT
-            TYPE.description
-        FROM
-            USER
-            JOIN TYPE ON USER.Type_ID == TYPE.Type_ID
-        WHERE
-            USER.client_ID = 2
-    ) = 'admin';
 
 ------------------TRIGGER--------------------
 CREATE TRIGGER taked_books AFTER INSERT ON Book_Orders FOR EACH ROW BEGIN
@@ -891,6 +920,20 @@ FROM
 WHERE
     Name LIKE '%s';
 
+-- Consulta para saber los libros alquilados por un usuario (por email) el mes anterior
+SELECT
+    Orders.Rented_Day,
+    USER.Email,
+    BOOK.Name,
+    Book_Orders.OrdersID
+FROM
+    Orders
+    JOIN USER ON Orders.Client_ID = USER.Client_ID
+    JOIN Book_Orders ON Book_Orders.OrdersID = Orders.OrdersID
+    JOIN BOOK ON Book_Orders.ISBN = BOOK.ISBN
+WHERE
+    Orders.Rented_Day = DATE('2023-09-18');
+
 ----------(Libros alquilados el último mes)-------------
 -- para jooooshhhhhhhhhhhhhhhhhhhhhhhhhhh
 -- SELECT
@@ -905,35 +948,31 @@ WHERE
 --     INNER JOIN BOOK ON INVENTARY.Inventary_ID = BOOK.ISBN;
 -- ------------(consulta para el libro mayor alquilado el mes anterior)--------------
 SELECT
-    count(Rented_Day) 'mas rentado',
-    Rented_Day,
-    BOOK.Name
-FROM
-    Orders
-    JOIN BOOK ON Orders.OrdersID = BOOK.ISBN
-WHERE
-    Rented_Day BETWEEN "29/08/2023" AND "29/09/2023";
-
-SELECT
-    count(Borrowed_Books),
+    count(INVENTARY.Borrowed_Books),
+    Orders.Rented_Day,
     BOOK.Name
 FROM
     INVENTARY
     JOIN BOOK on INVENTARY.Inventary_ID = BOOK.ISBN
+    JOIN Orders ON INVENTARY.Inventary_ID = Orders.OrdersID
 WHERE
-    Rented_Day BETWEEN "29/08/2023" AND "29/09/2023";
+    datetime BETWEEN '29-08-2023' AND '29-09-2023';
 
---    Rented_Day BETWEEN '29-08-2023' AND '29-9-2023';
------------------------------------------------- 
 SELECT
-    INVENTARY.Quantity_Available,
-    BOOK.ISBN
+    count(INVENTARY.Borrowed_Books),
+    Orders.Rented_Day,
+    BOOK.Name
 FROM
-    INVENTARY i
-    INNER JOIN BOOK ON INVENTARY.Inventary_ID = BOOK.ISBN
+    INVENTARY
+    JOIN BOOK ON INVENTARY.Inventary_ID = BOOK.Inventary_ID
+    JOIN Book_Orders ON BOOK.ISBN = Book_Orders.ISBN
+    JOIN Orders ON Book_Orders.OrdersID = Orders.OrdersID
 WHERE
-    Quantity_Available = 0;
+    Rented_Day BETWEEN '29-01-2023' AND '29-30-2023'
+ORDER BY
+    Borrowed_Books DESC;
 
+------------------------------------------------
 -- -- -------------Consulta que nos permita saber cuáles libros no se encuentran en el inventario pero si en la
 -- tabla de libros
 SELECT
@@ -945,14 +984,6 @@ FROM
 WHERE
     Quantity_Available = 0;
 
--- SELECT
---     Quantity_Available,
---     ISBN_ID,
---     b.Name
--- FROM
---     Inventory i
---     JOIN Book b ON b.ISBN = i.
---     WHERE quantity_avaible = 0;
 ----------(Libros alquilados el último mes)-------------
 SELECT
     Orders.Rented_Day,
@@ -977,32 +1008,17 @@ FROM
     JOIN GENRE on Inventary_Users.Inventary_UsersID = GENRE.genr_id
     JOIN BOOK ON Inventary_Users.Inventary_ID = BOOK.ISBN
     JOIN AUTHOR ON Inventary_Users.Inventary_ID = AUTHOR.Author_ID
-WHERE
-    BOOK.Name = 'Odisea'
-    OR GENRE.name = 'Terror';
-
+-- WHERE
+--     BOOK.Name = 'Odisea'
+--     OR GENRE.name = 'Terror';;
+;
 ------------------(Libros alquilados por día)----------------------
 SELECT
-    AVG(Borrowed_Books),
-    Rented_Day,
-    ISBN
+    COUNT(*)
 FROM
-    INVENTARY
-    JOIN book ON BOOK.ISBN = INVENTARY.Inventary_ID
-    JOIN Book_Orders ON Book_Orders.Book_OrdersID = BOOK.ISBN
-    JOIN Orders ON Orders.OrdersID = Book_Orders.Book_OrdersID
-    JOIN Rented_Book;
-
-SELECT
-    avg(borrowed),
-    depart_date,
-    inventory.inventory_id
-FROM
-    inventory
-    JOIN book b ON b.book_id = inventory.book_id
-    JOIN book_order ob ON ob.book_id = b.book_id
-    JOIN orders o ON o.orders_id = ob.orders_id
-    JOIN rented_type rt ON rt.rented_type_id = o.rented_type_id
+    Orders
 WHERE
-    depart_date = '2023-08-2'
-    AND rt.name_type = 'for rent';
+    Rented_Day > '2023-09-17'
+    AND Return_Date < '2023-10-02';
+
+
