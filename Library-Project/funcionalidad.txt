@@ -5,8 +5,6 @@ SELECT
 FROM
     "table-name";
 
--- database: c:\library-project\Library-project\library_joshua_joseth\Library-Project\Library.sqlite3
--- Use the ▷ button in the top right corner to run the entire file.
 SELECT
     *
 FROM
@@ -268,54 +266,67 @@ CREATE TABLE
         Book_rented VARCHAR(250),
         Rented_Day VARCHAR(250),
         Return_Date VARCHAR(250),
-        FOREIGN KEY (Client_ID) REFERENCES USER (Client_ID)
+        Order_StateID VARCHAR(250),
+        FOREIGN KEY (Client_ID) REFERENCES USER (Client_ID) FOREIGN KEY (Order_StateID) REFERENCES Order_State (Order_StateID)
     );
 
 INSERT INTO
-    Orders (Client_ID, Book_rented, Rented_Day, Return_Date)
+    Orders (
+        Client_ID,
+        Book_rented,
+        Rented_Day,
+        Return_Date,
+        Order_StateID
+    )
 VALUES
-    (1, 'Odisea', '12/04/2023', '12/06/2023'),
+    (1, 'Odisea', '12-04-2023', '12-06-2023', 1),
     (
         2,
-        'Don Quijote Me la Mancha',
-        '24/07/2023',
-        '24/09/2023'
+        'Don Quijote De la Mancha',
+        '24-07-2023',
+        '24-09-2023',
+        2
     ),
     (
         3,
         'El código Da Vinci',
-        '17/03/2023',
-        '17/05/2023'
+        '17-03-2023',
+        '17-05-2023',
+        1
     ),
-    (4, 'Diez Negritos', '15/02/2023', '15/04/2023'),
+    (4, 'Diez Negritos', '15-02-2023', '15-04-2023', 2),
     (
         5,
         'Alicia En el país de la maravillas',
-        '11/08/2023',
-        '11/10/2023'
+        '11-08-2023',
+        '11-10-2023',
+        3
     ),
     (
         6,
         'Las aventuras de Sherlock Holmes',
-        '02/01/2023',
-        '02/03/2023'
+        '02-01-2023',
+        '02-03-2023',
+        6
     ),
-    (7, 'El Hobbit', '24/04/2023', '24/06/2023'),
+    (7, 'El Hobbit', '24-04-2023', '24-06-2023', 5),
     (
         8,
         'El señor de los anillos',
-        '29/06/2023',
-        '29/08/2023'
+        '29-06-2023',
+        '29-08-2023',
+        4
     ),
-    (9, 'El alquimista', '03/03/2023', '03/05/2023'),
-    (10, '1984', '10/02/2023', '10/04/2023'),
+    (9, 'El alquimista', '03-03-2023', '03-05-2023', 5),
+    (10, '1984', '10-02-2023', '10-04-2023', 4),
     (
         11,
         'Los hombres que no amaban a las mujeres',
-        '18/07/2023',
-        '18/07/2023'
+        '18-07-2023',
+        '18-07-2023',
+        6
     ),
-    (12, 'Guerra y paz', '12/09/2023', '12/11/2023');
+    (12, 'Guerra y paz', '12-09-2023', '12-11-2023', 4);
 
 SELECT
     *
@@ -325,18 +336,37 @@ FROM
 DROP TABLE Orders;
 
 -- ------------------------------------------------------------------------
+CREATE TABLE
+    Order_State (
+        Order_StateID INTEGER PRIMARY KEY NOT NULL,
+        State VARCHAR(50)
+    );
+
+INSERT INTO
+    Order_State (State)
+VALUES
+    ('pending'),
+    ('delivered'),
+    ('rented');
+
+DROP TABLE Order_State;
+
+SELECT
+    *
+FROM
+    Order_State;
+
 -- ------------------------------------------------------------------------
 CREATE TABLE
     USER (
-        Client_ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        Name VARCHAR(250),
-        phoneNumber INTEGER NOT NULL,
-        Email VARCHAR(250),
-        Type_ID INTEGER NOT NULL,
-        Password VARCHAR(250),
-        Pay_MethodID INTEGER NOT NULL,
-        FOREIGN KEY (Type_ID) REFERENCES TYPE (Type_ID),
-        FOREIGN KEY (Pay_MethodID) REFERENCES PAY_METHOD (Pay_MethodID)
+        OrdersID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        Client_ID INTEGER NOT NULL,
+        Book_rented VARCHAR(250),
+        Rented_Day DATE,
+        Return_Date VARCHAR(250),
+        Order_StateID VARCHAR(250),
+        FOREIGN KEY (Order_StateID) REFERENCES Order_State (Order_StateID),
+        FOREIGN KEY (Client_ID) REFERENCES USER (Client_ID)
     );
 
 INSERT INTO
@@ -519,60 +549,60 @@ VALUES
     (
         1,
         1,
-        '18/07/2023',
+        '18-07-2023',
         'Me pareció un libro muy interesante',
         4.5
     ),
     (
         2,
         2,
-        '26/09/2023',
+        '26-09-2023',
         'No lo he terminado pero me está gustando bastante',
         4.2
     ),
-    (3, 3, '27/08/2022', 'No me gustó ', 2),
+    (3, 3, '27-08-2022', 'No me gustó ', 2),
     (
         4,
         4,
-        '16/09/2021',
+        '16-09-2021',
         'siento que le hace falta desarrollo de persoaje',
         3.4
     ),
     (
         5,
         5,
-        '26/09/2022',
+        '26-09-2022',
         'adoro el personaje principal',
         5
     ),
-    (6, 6, '01/01/2023', 'ta bom', 4.5),
-    (7, 7, '06/01/2023', 'Me gustó', 4),
-    (8, 8, '15/04/2023', 'que bonitoooooooo', 4.3),
+    (6, 6, '01-01-2023', 'ta bom', 4.5),
+    (7, 7, '06-01-2023', 'Me gustó', 4),
+    (8, 8, '15-04-2023', 'que bonitoooooooo', 4.3),
     (
         9,
         9,
-        '22/03/2023',
+        '22-03-2023',
         'no lo pude terminar, muy aburrido',
         2.4
     ),
     (
         10,
         10,
-        '23/06/2023',
+        '23-06-2023',
         'no puedo esperar el siguiente libro',
         5
     ),
     (
         11,
         11,
-        '22/04/2023',
+        '22-04-2023',
         'Me gustó pero se me hizo muy corto',
         4.3
     ),
     (
         12,
         12,
-        '10/02/2023',
+        '10-02-2023',
         'No me lo vuelvo a leer ni aunque me paguen, ni aunque mi vida dependa de ello.',
         0
     );
@@ -683,15 +713,64 @@ FROM
 -- ----------------------------------------
 --                   FUNCIONALIDAD
 -- ----------------------------------------
--- ----------------FUNCIONALIADAD CLIENTES-----
+-- ----------------FUNCIONALIADAD CLIENTES---------------------------------
+-- ---------------------INGRESAR LIBRO------------
+-- Actualizar el inventario: agregando nuevos libros, actualizando cantidad de ejemplares de un libro se
+-- tienen disponibles
+UPDATE INVENTARY
+SET
+    Quantity_Available = Quantity_Available + 1
+WHERE
+    Inventary_ID = 1
+    AND (
+        SELECT
+            TYPE.description
+        FROM
+            USER
+            INNER JOIN TYPE ON USER.Type_ID = TYPE.Type_ID
+        WHERE
+            USER.Client_ID = 2
+    ) = 'admin';
+
+INSERT OR REPLACE INTO
+    Orders (Client_ID, Book_rented, Rented_Day, Return_Date)
+VALUES
+    (11, "Guerra y paz", "19/09/2023", "23/10/2023");
+
+------------------(Feedback/Review)------------------
+-- SELECT REVIEW.ReviewID FROM REVIEW
+----------(Libros mayores a 3 de calificación)-------------
+SELECT
+    *
+FROM
+    REVIEW
+WHERE
+    Grade > 3;
+
+-- ------------order
+SELECT
+    BOOK.Name,
+    BOOK.Rent_Amount,
+    PAY_METHOD.Description
+FROM
+    BOOK
+    INNER JOIN PAY_METHOD ON BOOK.ISBN = PAY_METHOD.Pay_MethodID;
+
+------------------
+UPDATE Orders
+SET
+    Return_Date = 13 / 09 / 2023
+WHERE
+    OrdersID = 5;
+
 UPDATE Orders
 SET
     Rented_Day = "not return"
 WHERE
     OrdersID = 1;
 
-CREATE TRIGGER actu_inventary AFTER
-UPDATE ON Orders BEGIN
+---------------------actualizR INVENTARIO al agregar libro
+CREATE TRIGGER actu_inventary AFTER INSERT ON Orders BEGIN
 UPDATE INVENTARY
 SET
     Quantity_Available = Quantity_Available -1
@@ -710,6 +789,39 @@ WHERE
 
 END;
 
+UPDATE INVENTARY
+SET
+    Borrowed_Books = 18
+WHERE
+    Inventary_ID = 1;
+
+DROP TRIGGER actu_inventary;
+
+-- ------------------
+SELECT
+    i.Inventary_ID
+FROM
+    Orders o
+    JOIN USER u ON u.Client_ID = o.OrdersID
+    JOIN Book_Orders bs ON bs.Book_OrdersID = o.OrdersID
+    JOIN BOOK b ON b.ISBN = bs.ISBN
+    JOIN INVENTARY i ON i.Inventary_ID = b.Inventary_ID
+WHERE
+    o.OrdersID = 1;
+
+-----------------maybe-----------------
+SELECT
+    i.Inventary_ID
+FROM
+    Orders o
+    JOIN USER u ON u.Client_ID = o.OrdersID
+    JOIN Book_Orders bs ON bs.Book_OrdersID = o.OrdersID
+    JOIN BOOK b ON b.ISBN = bs.ISBN
+    JOIN INVENTARY i ON i.Inventary_ID = b.Inventary_ID
+WHERE
+    o.OrdersID = 1;
+
+----------------------este sirve-
 SELECT
     i.Inventary_ID
 FROM
@@ -718,24 +830,24 @@ FROM
     JOIN BOOK b ON b.ISBN = bs.ISBN
     JOIN INVENTARY i ON i.Inventary_ID = b.Inventary_ID
 WHERE
-    o.OrdersID = 1;
+    o.OrdersID = New.OrdersID;
 
--- SELECT b.ISBN FROM Orders o
---     JOIN Book_Orders bs ON bs.Book_OrdersID = o.Book_rentedID
---     JOIN BOOK b ON b.ISBN = sb.ISBN
---     WHERE o.OrdersID = 1;
-SELECT
-    *
-FROM
-    Orders;
-
-DROP TRIGGER actu_inventary;
-
-UPDATE INVENTARY
+------ -----------------------------------------------------
+-- Actualizar el estado de las órdenes o registro de libros alquilados
+UPDATE Orders
 SET
-    Borrowed_Books = 2
+    Order_StateID = 1
 WHERE
-    OrdersID = 1;
+    OrdersID = 2
+    AND (
+        SELECT
+            TYPE.description
+        FROM
+            USER
+            JOIN TYPE ON USER.Type_ID == TYPE.Type_ID
+        WHERE
+            USER.client_ID = 2
+    ) = 'admin';
 
 ------------------TRIGGER--------------------
 CREATE TRIGGER taked_books AFTER INSERT ON Book_Orders FOR EACH ROW BEGIN
@@ -781,3 +893,116 @@ WHERE
 
 ----------(Libros alquilados el último mes)-------------
 -- para jooooshhhhhhhhhhhhhhhhhhhhhhhhhhh
+-- SELECT
+--     INVENTARY.Quantity_Available,
+--     PAY_METHOD.State,
+--     REVIEW.Text,
+--     BOOK.Name
+-- FROM
+--     INVENTARY
+--     INNER JOIN PAY_METHOD ON INVENTARY.Inventary_ID = PAY_METHOD.Pay_MethodID
+--     INNER JOIN REVIEW ON INVENTARY.Inventary_ID = REVIEW.ReviewID
+--     INNER JOIN BOOK ON INVENTARY.Inventary_ID = BOOK.ISBN;
+-- ------------(consulta para el libro mayor alquilado el mes anterior)--------------
+SELECT
+    count(Rented_Day) 'mas rentado',
+    Rented_Day,
+    BOOK.Name
+FROM
+    Orders
+    JOIN BOOK ON Orders.OrdersID = BOOK.ISBN
+WHERE
+    Rented_Day BETWEEN "29/08/2023" AND "29/09/2023";
+
+SELECT
+    count(Borrowed_Books),
+    BOOK.Name
+FROM
+    INVENTARY
+    JOIN BOOK on INVENTARY.Inventary_ID = BOOK.ISBN
+WHERE
+    Rented_Day BETWEEN "29/08/2023" AND "29/09/2023";
+
+--    Rented_Day BETWEEN '29-08-2023' AND '29-9-2023';
+------------------------------------------------ 
+SELECT
+    INVENTARY.Quantity_Available,
+    BOOK.ISBN
+FROM
+    INVENTARY i
+    INNER JOIN BOOK ON INVENTARY.Inventary_ID = BOOK.ISBN
+WHERE
+    Quantity_Available = 0;
+
+-- -- -------------Consulta que nos permita saber cuáles libros no se encuentran en el inventario pero si en la
+-- tabla de libros
+SELECT
+    Quantity_Available,
+    b.Name
+FROM
+    INVENTARY i
+    JOIN BOOK b ON b.Inventary_ID = i.Inventary_ID
+WHERE
+    Quantity_Available = 0;
+
+-- SELECT
+--     Quantity_Available,
+--     ISBN_ID,
+--     b.Name
+-- FROM
+--     Inventory i
+--     JOIN Book b ON b.ISBN = i.
+--     WHERE quantity_avaible = 0;
+----------(Libros alquilados el último mes)-------------
+SELECT
+    Orders.Rented_Day,
+    USER.Email,
+    BOOK.Name,
+    Book_Orders.OrdersID
+FROM
+    Orders
+    JOIN USER ON Orders.Client_ID = USER.Client_ID
+    JOIN Book_Orders ON Book_Orders.OrdersID = Orders.OrdersID
+    JOIN BOOK ON Book_Orders.ISBN = BOOK.ISBN
+WHERE
+    Orders.Rented_Day = DATE('2023-09-18');
+
+SELECT
+    Inventary_Users.Inventary_ID,
+    GENRE.name,
+    BOOK.Name,
+    AUTHOR.name_author
+FROM
+    Inventary_Users
+    JOIN GENRE on Inventary_Users.Inventary_UsersID = GENRE.genr_id
+    JOIN BOOK ON Inventary_Users.Inventary_ID = BOOK.ISBN
+    JOIN AUTHOR ON Inventary_Users.Inventary_ID = AUTHOR.Author_ID
+WHERE
+    BOOK.Name = 'Odisea'
+    OR GENRE.name = 'Terror';
+
+------------------(Libros alquilados por día)----------------------
+SELECT
+    AVG(Borrowed_Books),
+    Rented_Day,
+    ISBN
+FROM
+    INVENTARY
+    JOIN book ON BOOK.ISBN = INVENTARY.Inventary_ID
+    JOIN Book_Orders ON Book_Orders.Book_OrdersID = BOOK.ISBN
+    JOIN Orders ON Orders.OrdersID = Book_Orders.Book_OrdersID
+    JOIN Rented_Book;
+
+SELECT
+    avg(borrowed),
+    depart_date,
+    inventory.inventory_id
+FROM
+    inventory
+    JOIN book b ON b.book_id = inventory.book_id
+    JOIN book_order ob ON ob.book_id = b.book_id
+    JOIN orders o ON o.orders_id = ob.orders_id
+    JOIN rented_type rt ON rt.rented_type_id = o.rented_type_id
+WHERE
+    depart_date = '2023-08-2'
+    AND rt.name_type = 'for rent';
